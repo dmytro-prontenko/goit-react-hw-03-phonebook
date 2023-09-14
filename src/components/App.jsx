@@ -16,6 +16,19 @@ class App extends React.Component {
     ...INITIAL_STATE,
   };
 
+  componentDidMount(){
+    const contacts = JSON.parse(window.localStorage.getItem("contacts"))
+    if (contacts?.length) {
+      this.setState({contacts})
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      window.localStorage.setItem("contacts", JSON.stringify(this.state.contacts))
+    }
+  }
+
   handleChangeInput = e => {
     console.log(e.target.name);
     this.setState({ [e.target.name]: e.target.value });
@@ -27,6 +40,7 @@ class App extends React.Component {
     );
     if (name && number) {
       if (!contactExists) {
+
         this.setState(prev => ({
           contacts: [...prev.contacts, { id: nanoid(), name, number }],
           name: '',
